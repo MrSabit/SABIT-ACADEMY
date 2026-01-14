@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ lesson.title }}</h1>
+    {% if html_content %}
+    <div class="card mb-4">
+        <div class="card-body" style="padding:0;">
+            <iframe srcdoc="{{ html_content|replace('"', '&quot;')|replace("'", '&#39;')|safe }}"
+                    style="width:100%;min-height:600px;border:none;overflow:auto;"
+                    sandbox="allow-scripts allow-same-origin">
+            </iframe>
+        </div>
+    </div>
+    {% endif %}
+    <h2>Notes</h2>
+    <div class="row">
+        {% for note in notes %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ note.title }}</h5>
+                    <a href="{{ url_for('student.view_note', id=note.id) }}" class="btn btn-primary">Read Note</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('student.view_day', day_id=lesson.day_id) }}" class="btn btn-secondary">Back to Lessons</a>
+{% endblock %}

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Python Notes - Beginner Level</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+            color: #2d3436;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 4px solid #3498db;
+            padding-bottom: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #2980b9;
+            background: linear-gradient(to right, #e8f4f8, transparent);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+
+        h3 {
+            color: #16a085;
+            margin-top: 2.2em;
+        }
+
+        .section-box {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #3498db;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .code-block {
+            background-color: #2d3436;
+            color: #dfe4e9;
+            padding: 18px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            margin: 15px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block::before {
+            content: "Python";
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: #27ae60;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .comment {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .important {
+            background-color: #e8f4fd;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+
+        ul.fancy {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul.fancy li {
+            margin: 10px 0;
+            position: relative;
+            padding-left: 35px;
+        }
+
+        ul.fancy li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .emoji-title {
+            font-size: 1.4em;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🐍 Python Beginner Notes</h1>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">1.</span> What is Python?</h2>
+
+        <div class="important">
+            <strong>Python is a high-level, interpreted, general-purpose programming language</strong>
+            created by <span class="highlight">Guido van Rossum</span> and first released in <span class="highlight">1991</span>.
+        </div>
+
+        <h3>Key Features of Python</h3>
+        <ul class="fancy">
+            <li>Very <strong>easy to read</strong> and <strong>easy to learn</strong> (beautiful syntax)</li>
+            <li><strong>Interpreted</strong> → No compilation needed, run code directly</li>
+            <li><strong>Dynamically typed</strong> → No need to declare variable types</li>
+            <li><strong>Multi-paradigm</strong> → Supports object-oriented, procedural and functional programming</li>
+            <li>Huge community & <strong>tons of libraries</strong> (pip install anything!)</li>
+            <li>Cross-platform (Windows / macOS / Linux / even phones & servers)</li>
+        </ul>
+
+        <h3>Where is Python used today? (2025–2026)</h3>
+        <ul class="fancy">
+            <li>Web development (Django, FastAPI, Flask)</li>
+            <li>Data Science & Machine Learning (pandas, numpy, tensorflow, pytorch)</li>
+            <li>Automation / Scripting</li>
+            <li>AI / Generative AI tools</li>
+            <li>Game development (pygame, godot python support)</li>
+            <li>DevOps & Cloud (Ansible, AWS boto3, kubernetes operators)</li>
+            <li>Cybersecurity tools</li>
+        </ul>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">2.</span> Your First Python Program</h2>
+
+        <div class="code-block">
+            <pre>
+<span class="comment"># This is our very first program! 🎉</span>
+print("Hello, Python World! 🌍")
+print("I am learning Python in", 2026)
+print("My name is", "Student", "and I'm excited!")
+            </pre>
+        </div>
+
+        <h3>How to run it? (choose any one)</h3>
+        <ul class="fancy">
+            <li>Save as <code>hello.py</code> → open terminal/cmd → type <code>python hello.py</code></li>
+            <li>Online: Replit / Google Colab / PythonAnywhere</li>
+            <li>VS Code + Python extension (most popular in 2025)</li>
+            <li>PyCharm Community (free) or Cursor / Windsurf</li>
+        </ul>
+
+        <div class="important">
+            <strong>print()</strong> is the most basic function in Python<br>
+            It shows/output/displays something on the screen
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">3.</span> Comments in Python</h2>
+
+        <div class="important">
+            Comments are lines that Python <strong>ignores</strong>.<br>
+            They are written only for <strong>humans</strong> to understand the code.
+        </div>
+
+        <h3>Types of Comments</h3>
+
+        <table style="width:100%; margin:20px 0; border-collapse: collapse;">
+            <tr style="background:#3498db; color:white;">
+                <th style="padding:12px;">Type</th>
+                <th style="padding:12px;">Symbol</th>
+                <th style="padding:12px;">Example</th>
+                <th style="padding:12px;">Usage</th>
+            </tr>
+            <tr style="background:#ecf0f1;">
+                <td>Single line</td>
+                <td><code>#</code></td>
+                <td><code># This is a comment</code></td>
+                <td>Most common</td>
+            </tr>
+            <tr>
+                <td>Multi-line (kind of)</td>
+                <td><code>""" ... """</code> or <code>''' ... '''</code></td>
+                <td><pre>"""
+This is
+multi-line
+comment
+"""</pre></td>
+                <td>Documentation (docstrings)</td>
+            </tr>
+        </table>
+
+        <div class="code-block">
+            <pre>
+<span class="comment"># This program greets different people</span>
+
+name = "Sara"           <span class="comment"># student's name</span>
+age = 14                <span class="comment"># current age in 2026</span>
+
+print("Hello", name)    <span class="comment"># simple greeting</span>
+
+<span class="comment">"""
+Multi-line comment example:
+This program can be extended later
+to calculate birthday cake candles needed!
+"""</span>
+
+print("You are", age, "years young! 🎂")
+            </pre>
+        </div>
+
+        <div class="important" style="margin-top:30px;">
+            <strong>Good programmers write good comments!</strong><br>
+            → Explain <strong>WHY</strong> you wrote the code (not just WHAT)<br>
+            → Comment difficult parts<br>
+            → Add important information for future you (or your team)
+        </div>
+    </div>
+
+    <div style="text-align:center; margin-top:50px; color:#7f8c8d;">
+        <p>Happy Coding! 🐍✨<br>
+        Next topics: Variables, Data Types, Input from user...</p>
+    </div>
+
+</body>
+</html>

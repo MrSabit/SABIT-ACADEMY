@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ program.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ program.title }}</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Python Code</h5>
+            <div style="background-color: #272822; color: #f8f8f2; padding: 15px; border-radius: 5px; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 14px; line-height: 1.4; overflow-x: auto;">
+                {{ highlighted_code|safe }}
+            </div>
+        </div>
+    </div>
+    <a href="{{ url_for('student.view_day', day_id=program.day_id) }}" class="btn btn-secondary mt-3">Back to {{ program.day.title }}</a>
+{% endblock %}

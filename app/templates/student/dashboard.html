@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+    <div class="text-center mb-4">
+        <a href="{{ url_for('auth.change_profile_pic') }}" title="Change Profile Picture">
+            {% if current_user.profile_pic %}
+                <img src="{{ url_for('static', filename='uploads/' + current_user.profile_pic) }}" alt="Profile Picture" class="rounded-circle border border-primary" style="width: 120px; height: 120px; object-fit: cover; box-shadow: 0 0 20px rgba(97, 218, 251, 0.3);" onerror="this.src='{{ url_for('static', filename='default_profile_pic.jpg') }}'">
+            {% else %}
+                <img src="{{ url_for('static', filename='default_profile_pic.jpg') }}" alt="Default Profile Picture" class="rounded-circle border border-primary" style="width: 120px; height: 120px; object-fit: cover; box-shadow: 0 0 20px rgba(97, 218, 251, 0.3);">
+            {% endif %}
+        </a>
+    </div>
+    <h1 class="text-center mb-3">
+        <span class="text-primary">&gt;</span> Student Dashboard <span class="text-primary">&lt;</span>
+    </h1>
+    <p class="text-center text-secondary mb-5">Welcome back, <code>{{ current_user.username }}</code>!</p>
+
+    <!-- Total Score Card -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-4">
+            <div class="card text-center border-primary">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <span class="text-primary">∑</span> Total Score
+                    </h5>
+                    <h2 class="text-primary font-monospace">{{ current_user.total_score or 0 }}</h2>
+                    <small class="text-secondary">Points earned</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submissions Table -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card dashboard-terminal">
+                <div class="card-header">
+                    <h5><span class="text-primary" style="margin-right: 5px;">$</span> Your Submissions</h5>
+                </div>
+                <div class="card-body">
+                    {% if submissions %}
+                        <table class="table table-striped" color="#ffffff">
+                            <thead>
+                                <tr>
+                                    <th>Assignment</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Submitted At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for submission in submissions %}
+                                <tr >
+                                    <td style="color: #ffffff">{{ submission.assignment.title }}</td>
+                                    <td style="color: #ffffff">{{ submission.score if submission.score is not none else 'Not Graded' }}</td>
+                                    <td style="color: #ffffff">{{ "%.2f"|format((submission.score / submission.assignment.max_score) * 100) if submission.score is not none else 'N/A' }}%</td>
+                                    <td style="color: #ffffff">{{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td style="color: #ffffff"><a href="{{ url_for('student.view_assignment', id=submission.assignment.id) }}" class="btn btn-sm btn-primary">View Details</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted">No submissions yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Chart -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Learning Progress (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    {% if chart_scores %}
+                        <canvas id="progressChart" width="400" height="200"></canvas>
+                    {% else %}
+                        <p class="text-muted">No graded submissions to display progress.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% if chart_scores %}
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    const progressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_dates | tojson }},
+            datasets: [{
+                label: 'Percentage Scores',
+                data: {{ chart_scores | tojson }},
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Percentage (%)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}

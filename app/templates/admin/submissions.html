@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Submissions{% endblock %}
+
+{% block content %}
+    <h1>Submissions</h1>
+    <div class="table-responsive">
+        <table class="table" style="color: white;">
+            <thead class="table-dark">
+                <tr>
+                    <th>Assignment</th>
+                    <th>Student</th>
+                    <th>Submitted At</th>
+                    <th>Score</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                    <td>{{ submission.assignment.title }}</td>
+                    <td>{{ submission.author.username }}</td>
+                    <td>{{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ submission.score if submission.score is not none else 'Not Graded' }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.review_submission', id=submission.id) }}" class="btn btn-primary btn-sm">Review</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

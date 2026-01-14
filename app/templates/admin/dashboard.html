@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="text-center mb-4">
+        <a href="{{ url_for('auth.change_profile_pic') }}" title="Change Profile Picture">
+            {% if current_user.profile_pic %}
+                <img src="{{ url_for('static', filename='uploads/' + current_user.profile_pic) }}" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" onerror="this.src='{{ url_for('static', filename='default_profile_pic.jpg') }}'">
+            {% else %}
+                <img src="{{ url_for('static', filename='default_profile_pic.jpg') }}" alt="Default Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+            {% endif %}
+        </a>
+    </div>
+    <h1 class="text-center">Admin Dashboard</h1>
+    <p class="text-center">Welcome, {{ current_user.username }}!</p>
+    <div class="list-group">
+        <a href="{{ url_for('admin.create_day') }}" class="list-group-item list-group-item-action">Create Day</a>
+        <a href="{{ url_for('admin.create_lesson') }}" class="list-group-item list-group-item-action">Create Lesson</a>
+        <a href="{{ url_for('admin.create_program') }}" class="list-group-item list-group-item-action">Create Program</a>
+        <a href="{{ url_for('admin.create_note') }}" class="list-group-item list-group-item-action">Create Note</a>
+        <a href="{{ url_for('admin.create_assignment') }}" class="list-group-item list-group-item-action">Create Assignment</a>
+        <a href="{{ url_for('admin.list_submissions') }}" class="list-group-item list-group-item-action">View Submissions</a>
+        <a href="{{ url_for('admin.list_users') }}" class="list-group-item list-group-item-action">Manage Users</a>
+    </div>
+    <div class="mt-4">
+        <h5 class="text-danger">Danger Zone</h5>
+        <form method="post" action="{{ url_for('admin.reset_app') }}" onsubmit="return confirm('Are you sure you want to reset the app? This will delete all data except admin users. This action cannot be undone!')">
+            <button type="submit" class="btn btn-danger">Reset App</button>
+            <small class="text-muted d-block mt-1">Clears all days, lessons, notes, programs, assignments, submissions, and non-admin users.</small>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,429 @@
+:root {
+    --primary-color: #61dafb; /* React blue */
+    --secondary-color: #21b4a6; /* Teal */
+    --accent-color: #ff6b6b; /* Coral */
+    --background-color: #1e1e2e; /* Dark blue-gray */
+    --surface-color: #2a2a3e; /* Slightly lighter */
+    --text-color: #ffffff; /* White text */
+    --text-secondary: #bac2de; /* Muted gray */
+    --card-bg-color: #313244; /* Card background */
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --border-color: #45475a;
+    --success-color: #a6e3a1;
+    --warning-color: #f9e2af;
+    --error-color: #f38ba8;
+}
+
+body {
+    background: linear-gradient(135deg, var(--background-color) 0%, #0f0f23 100%);
+    color: var(--text-color);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Source Code Pro', monospace;
+    min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle at 25% 25%, rgba(97, 218, 251, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(33, 180, 166, 0.1) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2361dafb' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: -1;
+}
+
+.navbar {
+    background: linear-gradient(90deg, var(--surface-color) 0%, var(--card-bg-color) 100%);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px var(--shadow-color);
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--primary-color) !important;
+    text-shadow: 0 0 10px rgba(97, 218, 251, 0.5);
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-color) !important;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color) !important;
+    transform: translateY(-2px);
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    color: #1e1e2e;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(97, 218, 251, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(97, 218, 251, 0.4);
+    color: #1e1e2e;
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, var(--accent-color), #ff8e53);
+    border: none;
+    color: #1e1e2e;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(45deg, #ff8e53, var(--accent-color));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    color: #1e1e2e;
+}
+
+.card {
+    background: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px var(--shadow-color);
+    border-color: var(--primary-color);
+}
+
+.card-body {
+    color: var(--text-color);
+}
+
+.form-control {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background: var(--surface-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(97, 218, 251, 0.25);
+    color: var(--text-color);
+}
+
+.alert {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 8px;
+}
+
+.alert-info {
+    border-left-color: var(--primary-color);
+}
+
+.alert-success {
+    border-left-color: var(--success-color);
+}
+
+.alert-warning {
+    border-left-color: var(--warning-color);
+}
+
+.alert-danger {
+    border-left-color: var(--error-color);
+}
+
+.list-group-item {
+    background: var(--card-bg-color);
+    border-color: var(--border-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background: var(--surface-color);
+    border-color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.table {
+    color: var(--text-color);
+}
+
+.table thead th {
+    background: var(--surface-color);
+    border-color: var(--border-color);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.table tbody tr {
+    background: var(--card-bg-color);
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background: var(--surface-color);
+}
+
+.table td, .table th {
+    border-color: var(--border-color);
+}
+
+.badge {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: #1e1e2e;
+    font-weight: bold;
+}
+
+.progress {
+    background: var(--surface-color);
+    border-radius: 10px;
+}
+
+.progress-bar {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    font-family: 'JetBrains Mono', monospace;
+    text-shadow: 0 0 10px rgba(97, 218, 251, 0.3);
+}
+
+p, li {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+code {
+    background: var(--surface-color);
+    color: var(--accent-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+}
+
+pre {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    overflow-x: auto;
+    position: relative;
+    font-family: 'Fira Code', monospace;
+}
+
+pre::before {
+    content: '';
+    color: var(--primary-color);
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+pre code {
+    background: none;
+    padding: 0 0 0 30px;
+    color: var(--text-color);
+}
+
+.container {
+    max-width: 1200px;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+}
+
+.assignment-description pre {
+    white-space: pre-wrap;
+    font-family: inherit;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.note-content pre {
+    white-space: pre-wrap;
+    font-family: inherit;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Lesson HTML Content Isolation */
+.lesson-html-content {
+    /* Reset common styles that might affect layout */
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+    /* Ensure content doesn't overflow */
+    overflow: visible !important;
+    /* CSS containment to isolate styles */
+    contain: layout style paint !important;
+    /* Create a new stacking context */
+    isolation: isolate !important;
+}
+
+.lesson-html-content * {
+    /* Prevent uploaded HTML from overriding global styles */
+    box-sizing: border-box !important;
+}
+
+.lesson-html-content body,
+.lesson-html-content html {
+    /* Reset body/html styles if present in uploaded content */
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    background: transparent !important;
+}
+
+/* Ensure styles within lesson content don't leak globally */
+.lesson-html-content h1,
+.lesson-html-content h2,
+.lesson-html-content h3,
+.lesson-html-content p,
+.lesson-html-content div,
+.lesson-html-content span {
+    /* Reset margins and padding that might affect layout */
+    margin: revert !important;
+    padding: revert !important;
+}
+
+/* Ensure the main app layout is protected */
+body {
+    width: 100% !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    background-color: var(--background-color) !important;
+    contain: none !important;
+}
+
+.container, .container-fluid {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    contain: none !important;
+}
+
+/* Dashboard Terminal Style */
+.dashboard-terminal {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: 'Fira Code', monospace;
+    position: relative;
+}
+
+.dashboard-terminal::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.dashboard-terminal .card-header {
+    background: var(--card-bg-color);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--primary-color);
+    font-weight: bold;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    body::before {
+        background-image:
+            radial-gradient(circle at 25% 25%, rgba(97, 218, 251, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(33, 180, 166, 0.05) 0%, transparent 50%);
+    }
+}
+
+.text-muted{
+    color : white !important;
+}
+
+.table-striped:{
+    color: #ffffff !important;
+}
+
+.text-primary {
+    color: #eeff00 !important;
+}

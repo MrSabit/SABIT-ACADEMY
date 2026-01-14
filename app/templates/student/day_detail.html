@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ day.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ day.title }}</h1>
+    <div class="row">
+        {% for lesson in lessons %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ lesson.title }}</h5>
+                    <a href="{{ url_for('student.view_lesson', lesson_id=lesson.id) }}" class="btn btn-primary">View Notes</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% for program in programs %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ program.title }}</h5>
+                    <a href="{{ url_for('student.view_program', program_id=program.id) }}" class="btn btn-success">View Program</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('student.list_notes') }}" class="btn btn-secondary">Back to Days</a>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Create Lesson{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center">Create Lesson</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label") }}
+                        {{ form.title(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.day_id.label(class="form-label") }}
+                        {{ form.day_id(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.html_file.label(class="form-label") }}
+                        {{ form.html_file(class="form-control") }}
+                    </div>
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Submit for {{ assignment.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center">Submit for: {{ assignment.title }}</h2>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.code_text.label(class="form-label") }}
+                        {{ form.code_text(class="form-control", rows=20) }}
+                    </div>
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

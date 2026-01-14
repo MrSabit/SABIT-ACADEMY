@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+    <div class="text-center mb-4">
+        {% if user.profile_pic %}
+            <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+        {% endif %}
+    </div>
+    <h1 class="text-center">{{ user.username }}'s Profile</h1>
+    <p class="text-center">Role: {{ user.role }}</p>
+
+    <!-- Total Score Card -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Score</h5>
+                    <h2 class="text-primary">{{ user.total_score or 0 }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submissions Table -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ user.username }}'s Submissions</h5>
+                </div>
+                <div class="card-body">
+                    {% if submissions %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Assignment</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Submitted At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for submission in submissions %}
+                                <tr>
+                                    <td><a href="{{ url_for('student.view_submission', id=submission.id) }}" class="text-decoration-none">{{ submission.assignment.title }}</a></td>
+                                    <td>{{ submission.score if submission.score is not none else 'Not Graded' }}</td>
+                                    <td>{{ "%.2f"|format((submission.score / submission.assignment.max_score) * 100) if submission.score is not none else 'N/A' }}%</td>
+                                    <td>{{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted">No submissions yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Chart -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ user.username }}'s Learning Progress (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    {% if chart_scores %}
+                        <canvas id="progressChart" width="400" height="200"></canvas>
+                    {% else %}
+                        <p class="text-muted">No graded submissions to display progress.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    {% if chart_scores %}
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    const progressChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_dates | tojson }},
+            datasets: [{
+                label: 'Percentage Scores',
+                data: {{ chart_scores | tojson }},
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Percentage (%)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                }
+            }
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}

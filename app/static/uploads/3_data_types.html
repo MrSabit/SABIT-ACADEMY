@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Python Notes - Data Types (Lesson 3)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            max-width: 940px;
+            margin: 0 auto;
+            padding: 35px;
+            background-color: #f5faff;
+            color: #1e272e;
+        }
+
+        h1 {
+            color: #0a3d62;
+            text-align: center;
+            border-bottom: 5px solid #0984e3;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #0984e3;
+            background: linear-gradient(to right, #e3f2fd, transparent);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin: 45px 0 20px;
+        }
+
+        h3 {
+            color: #2d3436;
+            margin-top: 2.3em;
+            border-left: 6px solid #00b894;
+            padding-left: 12px;
+        }
+
+        .section-box {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+            padding: 28px;
+            margin: 30px 0;
+            border-left: 6px solid #0984e3;
+        }
+
+        .type-card {
+            background: #f8f9fa;
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 18px;
+            margin: 18px 0;
+            transition: all 0.2s;
+        }
+
+        .type-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .int    { border-color: #e17055; background: #fff5f5; }
+        .float  { border-color: #0984e3; background: #f0f8ff; }
+        .str    { border-color: #fd79a8; background: #fff0f7; }
+        .bool   { border-color: #00b894; background: #f0fff4; }
+        .none   { border-color: #636e72; background: #f5f6f7; }
+
+        .code-block {
+            background: #2d3436;
+            color: #dfe4e9;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            margin: 18px 0;
+            position: relative;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .code-block::before {
+            content: "Python";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #00b894;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .type-name {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .important {
+            background: #fff3cd;
+            border-left: 6px solid #fdcb6e;
+            padding: 16px 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        table.data-types {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+        }
+
+        table.data-types th, table.data-types td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #dfe6e9;
+        }
+
+        table.data-types th {
+            background: #0984e3;
+            color: white;
+        }
+
+        table.data-types tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .emoji-title {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🐍 Python Data Types - Lesson 3</h1>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">1.</span> What are Data Types?</h2>
+
+        <div class="important">
+            Data types tell Python <strong>what kind of value</strong> a variable holds.<br>
+            Python is <strong>dynamically typed</strong> → you don't need to declare the type!
+        </div>
+
+        <p style="font-size:1.1em;">
+            Most common built-in data types in Python (2025–2026):
+        </p>
+
+        <table class="data-types">
+            <tr>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Mutable?</th>
+                <th>Example</th>
+                <th>Real-life meaning</th>
+            </tr>
+            <tr>
+                <td>int</td>
+                <td>Number</td>
+                <td>No</td>
+                <td>42, -7, 0</td>
+                <td>Whole numbers, age, quantity</td>
+            </tr>
+            <tr>
+                <td>float</td>
+                <td>Number</td>
+                <td>No</td>
+                <td>3.14, -0.001, 99.99</td>
+                <td>Decimal numbers, price, temperature</td>
+            </tr>
+            <tr>
+                <td>str</td>
+                <td>Text</td>
+                <td>No</td>
+                <td>"Hello", 'Python', ""</td>
+                <td>Names, messages, sentences</td>
+            </tr>
+            <tr>
+                <td>bool</td>
+                <td>Logical</td>
+                <td>No</td>
+                <td>True, False</td>
+                <td>Yes/No, on/off, correct/wrong</td>
+            </tr>
+            <tr>
+                <td>NoneType</td>
+                <td>Special</td>
+                <td>No</td>
+                <td>None</td>
+                <td>Nothing, no value, placeholder</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">2.</span> Main Data Types – Quick Overview</h2>
+
+        <div class="type-card int">
+            <div class="type-name">int → Integer (Whole Numbers)</div>
+            <p>Unlimited size in Python 3! (no 2³¹-1 limit like old languages)</p>
+            <div class="code-block">
+age = 15
+students_count = 28
+negative = -100
+very_big = 999999999999999999999
+
+print(type(age))          # <class 'int'>
+            </div>
+        </div>
+
+        <div class="type-card float">
+            <div class="type-name">float → Floating Point (Decimal Numbers)</div>
+            <p>Used for precise measurements, money (sometimes), science</p>
+            <div class="code-block">
+pi = 3.14159
+temperature = -2.5
+price = 1499.99
+
+print(type(temperature))  # <class 'float'>
+            </div>
+        </div>
+
+        <div class="type-card str">
+            <div class="type-name">str → String (Text)</div>
+            <p>Anything inside <code>" "</code> or <code>' '</code></p>
+            <div class="code-block">
+name = "Nowsad"
+message = 'I love Python!'
+empty = ""
+
+print(type(name))         # <class 'str'>
+            </div>
+            <p><strong>Note:</strong> Strings are <strong>immutable</strong> (cannot change single character directly)</p>
+        </div>
+
+        <div class="type-card bool">
+            <div class="type-name">bool → Boolean (True / False)</div>
+            <p>Very important for conditions & decisions</p>
+            <div class="code-block">
+is_student = True
+has_passed = False
+adult = age >= 18         # will be False if age=15
+
+print(type(is_student))   # <class 'bool'>
+            </div>
+        </div>
+
+        <div class="type-card none">
+            <div class="type-name">NoneType → None</div>
+            <p>Represents <strong>absence of value</strong></p>
+            <div class="code-block">
+result = None
+username = None           # no one logged in yet
+
+print(type(None))         # <class 'NoneType'>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">3.</span> How to Check Data Type?</h2>
+
+        <div class="code-block">
+x = 100
+y = 3.14
+name = "Sara"
+active = True
+nothing = None
+
+print(type(x))       # <class 'int'>
+print(type(y))       # <class 'float'>
+print(type(name))    # <class 'str'>
+print(type(active))  # <class 'bool'>
+print(type(nothing)) # <class 'NoneType'>
+        </div>
+
+        <div class="important">
+            <strong>type( )</strong> is your best friend when learning!<br>
+            Always use it when you are confused about what something is!
+        </div>
+    </div>
+
+    <div class="section-box" style="background:#fff3e0; border-left:6px solid #ff9800;">
+        <h2><span class="emoji-title">4.</span> Quick Summary Table (Memorize This!)</h2>
+
+        <table class="data-types" style="margin-top:15px;">
+            <tr style="background:#ff9800;color:white;">
+                <th>Real World</th>
+                <th>Python Type</th>
+                <th>Examples</th>
+            </tr>
+            <tr><td>Age, quantity</td><td>int</td><td>17, 0, 500</td></tr>
+            <tr><td>Price, height, marks</td><td>float</td><td>99.50, 1.75, 3.14159</td></tr>
+            <tr><td>Name, message, city</td><td>str</td><td>"Rahim", 'Dhaka'</td></tr>
+            <tr><td>Is raining? Logged in?</td><td>bool</td><td>True / False</td></tr>
+            <tr><td>No value / empty / unknown</td><td>None</td><td>None</td></tr>
+        </table>
+    </div>
+
+    <div style="text-align:center; margin:60px 0; color:#555; font-size:1.1em;">
+        <p>Next Lesson → Input from user + Type Conversion (Very Important!)<br><br>
+        Keep practicing! 🐍✨</p>
+    </div>
+
+</body>
+</html>

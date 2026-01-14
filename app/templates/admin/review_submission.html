@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Review Submission{% endblock %}
+
+{% block content %}
+    <h1>Review Submission</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            Submission for: {{ submission.assignment.title }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Student: {{ submission.author.username }}</h5>
+            <p>Submitted at: {{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <hr>
+            <h6>Submitted Code:</h6>
+            <pre><code class="language-python">{{ submission.code_text }}</code></pre>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Grade Submission</h5>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.score.label(class="form-label") }}
+                    {{ form.score(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.feedback.label(class="form-label") }}
+                    {{ form.feedback(class="form-control", rows=5) }}
+                </div>
+                <div class="d-grid">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

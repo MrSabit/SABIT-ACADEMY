@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Assignments{% endblock %}
+
+{% block content %}
+    <h1>Assignments</h1>
+    <div class="list-group">
+        {% for assignment in assignments %}
+            <a href="{{ url_for('student.view_assignment', id=assignment.id) }}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ assignment.title }}</h5>
+                    <small>Max Score: {{ assignment.max_score }}</small>
+                </div>
+                <p class="mb-1">{{ assignment.description | replace('\n', ' ') | truncate(150) }}</p>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
