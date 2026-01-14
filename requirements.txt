@@ -8,3 +8,4 @@ Flask-WTF
 gunicorn
 email-validator
 Pygments
+psycopg2-binary
