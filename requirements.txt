@@ -2,10 +2,9 @@ Flask
 Flask-SQLAlchemy
 Flask-Migrate
 Flask-Login
-python-dotenv
-Werkzeug
 Flask-WTF
+Werkzeug
 gunicorn
-email-validator
 Pygments
 psycopg2-binary
+email-validator

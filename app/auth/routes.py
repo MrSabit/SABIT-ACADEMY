@@ -36,24 +36,33 @@ def register():
         return redirect(url_for('student.dashboard'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        if form.profile_pic.data:
-            file = form.profile_pic.data
-            filename = secure_filename(file.filename)
-            upload_folder = current_app.config['UPLOAD_FOLDER']
-            os.makedirs(upload_folder, exist_ok=True)
-            file_path = os.path.join(upload_folder, filename)
-            try:
-                file.save(file_path)
-                user.profile_pic = filename
-                flash('Profile picture uploaded successfully!')
-            except Exception as e:
-                flash(f'Error uploading profile picture: {str(e)}')
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('auth.login'))
+        try:
+            user = User(username=form.username.data, email=form.email.data, role=form.role.data.lower())
+            user.set_password(form.password.data)
+            if form.profile_pic.data:
+                file = form.profile_pic.data
+                filename = secure_filename(file.filename)
+                upload_folder = current_app.config['UPLOAD_FOLDER']
+                os.makedirs(upload_folder, exist_ok=True)
+                file_path = os.path.join(upload_folder, filename)
+                try:
+                    file.save(file_path)
+                    user.profile_pic = filename
+                    flash('Profile picture uploaded successfully!')
+                except Exception as e:
+                    flash(f'Error uploading profile picture: {str(e)}')
+            db.session.add(user)
+            db.session.commit()
+            flash('Congratulations, you are now a registered user!')
+            return redirect(url_for('auth.login'))
+        except Exception as e:
+            db.session.rollback()
+            if 'UNIQUE constraint failed: user.email' in str(e):
+                flash('Email address is already registered. Please use a different email.')
+            elif 'UNIQUE constraint failed: user.username' in str(e):
+                flash('Username is already taken. Please choose a different username.')
+            else:
+                flash(f'An error occurred during registration: {str(e)}')
     return render_template('auth/register.html', title='Register', form=form)
 
 @bp.route('/change_profile_pic', methods=['GET', 'POST'])

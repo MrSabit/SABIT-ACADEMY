@@ -27,6 +27,15 @@
                         {{ form.password2(class="form-control") }}
                     </div>
                     <div class="mb-3">
+                        {{ form.role.label(class="form-label") }}
+                        {{ form.role(class="form-control", id="role") }}
+                    </div>
+                    <div class="mb-3" id="admin-code-field" style="display: none;">
+                        {{ form.admin_code.label(class="form-label") }}
+                        {{ form.admin_code(class="form-control", id="admin_code") }}
+                        <small class="form-text text-muted">Enter the special admin code to register as an admin</small>
+                    </div>
+                    <div class="mb-3">
                         {{ form.profile_pic.label(class="form-label") }}
                         {{ form.profile_pic(class="form-control") }}
                     </div>
@@ -38,4 +47,16 @@
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('role').addEventListener('change', function() {
+    const adminCodeField = document.getElementById('admin-code-field');
+    if (this.value === 'admin') {
+        adminCodeField.style.display = 'block';
+    } else {
+        adminCodeField.style.display = 'none';
+        document.getElementById('admin_code').value = '';
+    }
+});
+</script>
 {% endblock %}
