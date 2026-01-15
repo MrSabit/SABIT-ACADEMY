@@ -42,6 +42,10 @@ def register():
             if form.profile_pic.data:
                 file = form.profile_pic.data
                 filename = secure_filename(file.filename)
+                # Truncate filename if too long (keep extension)
+                if len(filename) > 200:
+                    name, ext = os.path.splitext(filename)
+                    filename = name[:200-len(ext)] + ext
                 upload_folder = current_app.config['UPLOAD_FOLDER']
                 os.makedirs(upload_folder, exist_ok=True)
                 file_path = os.path.join(upload_folder, filename)
@@ -74,6 +78,10 @@ def change_profile_pic():
         if form.profile_pic.data:
             file = form.profile_pic.data
             filename = secure_filename(file.filename)
+            # Truncate filename if too long (keep extension)
+            if len(filename) > 200:
+                name, ext = os.path.splitext(filename)
+                filename = name[:200-len(ext)] + ext
             upload_folder = current_app.config['UPLOAD_FOLDER']
             os.makedirs(upload_folder, exist_ok=True)
             file_path = os.path.join(upload_folder, filename)
