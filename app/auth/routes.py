@@ -16,7 +16,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid username or password', 'danger')
             return redirect(url_for('auth.login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
@@ -48,21 +48,21 @@ def register():
                 try:
                     file.save(file_path)
                     user.profile_pic = filename
-                    flash('Profile picture uploaded successfully!')
+                    flash('Profile picture uploaded successfully!', 'success')
                 except Exception as e:
-                    flash(f'Error uploading profile picture: {str(e)}')
+                    flash(f'Error uploading profile picture: {str(e)}', 'warning')
             db.session.add(user)
             db.session.commit()
-            flash('Congratulations, you are now a registered user!')
+            flash('Congratulations, you are now a registered user!', 'success')
             return redirect(url_for('auth.login'))
         except Exception as e:
             db.session.rollback()
             if 'UNIQUE constraint failed: user.email' in str(e):
-                flash('Email address is already registered. Please use a different email.')
+                flash('Email address is already registered. Please use a different email.', 'danger')
             elif 'UNIQUE constraint failed: user.username' in str(e):
-                flash('Username is already taken. Please choose a different username.')
+                flash('Username is already taken. Please choose a different username.', 'danger')
             else:
-                flash(f'An error occurred during registration: {str(e)}')
+                flash(f'An error occurred during registration: {str(e)}', 'danger')
     return render_template('auth/register.html', title='Register', form=form)
 
 @bp.route('/change_profile_pic', methods=['GET', 'POST'])
@@ -81,10 +81,10 @@ def change_profile_pic():
                 file.save(file_path)
                 current_user.profile_pic = filename
                 db.session.commit()
-                flash('Profile picture updated successfully!')
+                flash('Profile picture updated successfully!', 'success')
                 return redirect(url_for('student.dashboard'))
             except Exception as e:
-                flash(f'Error uploading profile picture: {str(e)}')
+                flash(f'Error uploading profile picture: {str(e)}', 'warning')
         else:
-            flash('No file selected.')
+            flash('No file selected.', 'warning')
     return render_template('auth/change_profile_pic.html', title='Change Profile Picture', form=form)
