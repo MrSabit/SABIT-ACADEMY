@@ -1,12 +1,13 @@
 from flask import render_template, redirect, url_for, flash, request, current_app
 from urllib.parse import urlparse
 from flask_login import login_user, logout_user, current_user
-from app import db
+from app import db, mail
 from app.auth import bp
-from app.auth.forms import LoginForm, RegistrationForm, ChangeProfilePicForm
+from app.auth.forms import LoginForm, RegistrationForm, ChangeProfilePicForm, EditProfileForm, ForgotPasswordForm, ResetPasswordForm
 from app.models import User
 import os
 from werkzeug.utils import secure_filename
+from flask_mail import Message
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -96,3 +97,96 @@ def change_profile_pic():
         else:
             flash('No file selected.', 'warning')
     return render_template('auth/change_profile_pic.html', title='Change Profile Picture', form=form)
+
+@bp.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    if not current_user.is_authenticated:
+        return redirect(url_for('auth.login'))
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        try:
+            # Update username and email
+            current_user.username = form.username.data
+            current_user.email = form.email.data
+            
+            # Update password if provided
+            if form.new_password.data:
+                current_user.set_password(form.new_password.data)
+            
+            db.session.commit()
+            flash('Profile updated successfully!', 'success')
+            return redirect(url_for('student.dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred while updating your profile: {str(e)}', 'danger')
+    elif request.method == 'GET':
+        # Pre-fill form with current user data
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+    return render_template('auth/edit_profile.html', title='Edit Profile', form=form)
+
+def send_password_reset_email(user):
+    token = user.generate_reset_token()
+    reset_url = url_for('auth.reset_password', token=token, _external=True)
+    
+    # Show reset link in console only in development mode
+    if current_app.config.get('MAIL_SUPPRESS_SEND'):
+        print(f"\n{'='*60}")
+        print(f"PASSWORD RESET LINK FOR {user.email}:")
+        print(f"{reset_url}")
+        print(f"{'='*60}\n")
+    
+    msg = Message('Password Reset Request',
+                  sender=current_app.config['MAIL_DEFAULT_SENDER'],
+                  recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link:
+{reset_url}
+
+If you did not make this request, simply ignore this email and no changes will be made.
+'''
+    
+    try:
+        mail.send(msg)
+        current_app.logger.info(f"Password reset email sent to {user.email}")
+    except Exception as e:
+        # If email fails, log the reset URL for development
+        current_app.logger.info(f"Password reset link for {user.email}: {reset_url}")
+        current_app.logger.warning(f"Email sending failed: {str(e)}")
+        # For development, we can still proceed
+        pass
+
+@bp.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for('student.dashboard'))
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+            # Check if email is configured
+            if current_app.config.get('MAIL_SUPPRESS_SEND'):
+                flash('Email is not configured. Check the console for the reset link.', 'info')
+            else:
+                flash('Check your email for instructions to reset your password.', 'info')
+        else:
+            # Don't reveal if email exists or not for security
+            flash('If an account with that email exists, a reset link has been sent.', 'info')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/forgot_password.html', title='Forgot Password', form=form)
+
+@bp.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('student.dashboard'))
+    user = User.query.filter_by(reset_token=token).first()
+    if not user or not user.verify_reset_token(token):
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('auth.forgot_password'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        user.clear_reset_token()
+        flash('Your password has been reset.', 'success')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password.html', title='Reset Password', form=form)

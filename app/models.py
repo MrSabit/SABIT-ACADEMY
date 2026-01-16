@@ -1,7 +1,8 @@
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from datetime import datetime
+from datetime import datetime, timedelta
+import secrets
 
 @login.user_loader
 def load_user(id):
@@ -15,6 +16,8 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(10), default='student')
     profile_pic = db.Column(db.String(255), nullable=True, default='default.jpg')
     total_score = db.Column(db.Integer, default=0)
+    reset_token = db.Column(db.String(100), nullable=True)
+    reset_token_expires = db.Column(db.DateTime, nullable=True)
     submissions = db.relationship('Submission', backref='author', lazy='dynamic')
 
     def set_password(self, password):
@@ -22,6 +25,25 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_reset_token(self, expires_in=3600):
+        token = secrets.token_urlsafe(32)
+        self.reset_token = token
+        self.reset_token_expires = datetime.utcnow() + timedelta(seconds=expires_in)
+        db.session.commit()
+        return token
+
+    def verify_reset_token(self, token):
+        if self.reset_token != token:
+            return False
+        if self.reset_token_expires < datetime.utcnow():
+            return False
+        return True
+
+    def clear_reset_token(self):
+        self.reset_token = None
+        self.reset_token_expires = None
+        db.session.commit()
 
 class Assignment(db.Model):
     id = db.Column(db.Integer, primary_key=True)

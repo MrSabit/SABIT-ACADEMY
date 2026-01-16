@@ -44,10 +44,10 @@
                             <tbody>
                                 {% for submission in submissions %}
                                 <tr>
-                                    <td><a href="{{ url_for('student.view_submission', id=submission.id) }}" class="text-decoration-none">{{ submission.assignment.title }}</a></td>
-                                    <td>{{ submission.score if submission.score is not none else 'Not Graded' }}</td>
-                                    <td>{{ "%.2f"|format((submission.score / submission.assignment.max_score) * 100) if submission.score is not none else 'N/A' }}%</td>
-                                    <td>{{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td><a href="{{ url_for('student.view_submission', id=submission.id) }}" class="text-decoration-none text-white">{{ submission.assignment.title }}</a></td>
+                                    <td class="text-white">{{ submission.score if submission.score is not none else 'Not Graded' }}</td>
+                                    <td class="text-white">{{ "%.2f"|format((submission.score / submission.assignment.max_score) * 100) if submission.score is not none else 'N/A' }}%</td>
+                                    <td class="text-white">{{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

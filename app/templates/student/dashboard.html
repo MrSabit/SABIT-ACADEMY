@@ -15,7 +15,24 @@
     <h1 class="text-center mb-3">
         <span class="text-primary">&gt;</span> Student Dashboard <span class="text-primary">&lt;</span>
     </h1>
-    <p class="text-center text-secondary mb-5">Welcome back, <code>{{ current_user.username }}</code>!</p>
+    <p class="text-center text-secondary mb-4">Welcome back, <code>{{ current_user.username }}</code>!</p>
+
+    <!-- Profile Actions -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-center gap-2">
+                <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </a>
+                <a href="{{ url_for('auth.change_profile_pic') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-camera"></i> Change Picture
+                </a>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Total Score Card -->
     <div class="row justify-content-center mb-4">

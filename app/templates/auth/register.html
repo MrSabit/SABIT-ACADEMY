@@ -83,9 +83,11 @@
                         {{ form.submit(class="btn btn-primary") }}
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
+                
+                <div class="text-center mt-3">
+                    <p class="text-white">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-decoration-none text-white">Login here</a></p>
+                    <p class="text-white">Forgot your password? <a href="{{ url_for('auth.forgot_password') }}" class="text-decoration-none text-white">Reset it here</a></p>
+                </div>
 </div>
 
 <script>
