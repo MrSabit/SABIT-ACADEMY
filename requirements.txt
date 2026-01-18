@@ -9,3 +9,4 @@ gunicorn
 Pygments
 psycopg2-binary
 email-validator
+python-dotenv
