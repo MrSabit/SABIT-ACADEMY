@@ -16,9 +16,13 @@
     <p class="text-center">Welcome, {{ current_user.username }}!</p>
     <div class="list-group">
         <a href="{{ url_for('admin.create_day') }}" class="list-group-item list-group-item-action">Create Day</a>
+        <a href="{{ url_for('admin.list_days') }}" class="list-group-item list-group-item-action">Manage Days</a>
         <a href="{{ url_for('admin.create_lesson') }}" class="list-group-item list-group-item-action">Create Lesson</a>
+        <a href="{{ url_for('admin.list_lessons') }}" class="list-group-item list-group-item-action">Manage Lessons</a>
         <a href="{{ url_for('admin.create_program') }}" class="list-group-item list-group-item-action">Create Program</a>
+        <a href="{{ url_for('admin.list_programs') }}" class="list-group-item list-group-item-action">Manage Programs</a>
         <a href="{{ url_for('admin.create_note') }}" class="list-group-item list-group-item-action">Create Note</a>
+        <a href="{{ url_for('admin.list_notes') }}" class="list-group-item list-group-item-action">Manage Notes</a>
         <a href="{{ url_for('admin.create_assignment') }}" class="list-group-item list-group-item-action">Create Assignment</a>
         <a href="{{ url_for('admin.list_submissions') }}" class="list-group-item list-group-item-action">View Submissions</a>
         <a href="{{ url_for('admin.list_users') }}" class="list-group-item list-group-item-action">Manage Users</a>

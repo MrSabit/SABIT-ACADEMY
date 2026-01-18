@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Python Notes - Lesson 8: Small but Important Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #f8faff;
+            color: #1a2533;
+        }
+
+        h1 {
+            color: #0a3d62;
+            text-align: center;
+            border-bottom: 7px solid #0984e3;
+            padding-bottom: 20px;
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            color: #0984e3;
+            background: linear-gradient(to right, #e3f2fd, transparent);
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin: 55px 0 25px;
+        }
+
+        h3 {
+            color: #2d3436;
+            margin-top: 2.4em;
+            border-left: 8px solid #00b894;
+            padding-left: 16px;
+        }
+
+        .section-box {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.09);
+            padding: 32px;
+            margin: 40px 0;
+            border-left: 8px solid #0984e3;
+        }
+
+        .code-block {
+            background: #2d3436;
+            color: #e0e7ff;
+            padding: 24px;
+            border-radius: 12px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            margin: 22px 0;
+            position: relative;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .code-block::before {
+            content: "Python";
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            background: #00b894;
+            color: white;
+            padding: 7px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .important {
+            background: #fff3cd;
+            border-left: 8px solid #fdcb6e;
+            padding: 20px 26px;
+            margin: 30px 0;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .tip {
+            background: #e8f5e9;
+            border-left: 8px solid #43a047;
+            padding: 18px 24px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+
+        .emoji-title {
+            font-size: 1.7em;
+            margin-right: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🐍 Python Lesson 8 – Small but Very Important Details</h1>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">1.</span> Escape Sequences (Special Characters)</h2>
+
+        <div class="important">
+            Backslash <code>\</code> tells Python: "the next character is special!"
+        </div>
+
+        <table style="width:100%; margin:20px 0; border-collapse: collapse;">
+            <tr style="background:#0984e3; color:white;">
+                <th style="padding:12px;">Escape</th>
+                <th style="padding:12px;">Meaning</th>
+                <th style="padding:12px;">Example</th>
+                <th style="padding:12px;">Output</th>
+            </tr>
+            <tr><td>\n</td><td>New line</td><td>"Hello\nWorld"</td><td>Hello<br>World</td></tr>
+            <tr><td>\t</td><td>Tab (4 spaces)</td><td>"Name:\tRahim"</td><td>Name:    Rahim</td></tr>
+            <tr><td>\\</td><td>Literal backslash</td><td>"C:\\Windows"</td><td>C:\Windows</td></tr>
+            <tr><td>\"</td><td>Double quote inside string</td><td>"He said \"Hi\""</td><td>He said "Hi"</td></tr>
+            <tr><td>\'</td><td>Single quote inside string</td><td>'It\'s me'</td><td>It's me</td></tr>
+        </table>
+
+        <div class="code-block">
+print("Hello\nWorld")              # new line
+print("Name:\tAge:\tCity")         # columns
+print("He said \"Python is fun!\"") # quote inside
+print('It\'s a beautiful day')      # apostrophe
+print("Path: C:\\Users\\Miftahul") # real windows path
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">2.</span> Raw Strings – Ignore Escapes</h2>
+
+        <div class="tip">
+            Put <code>r</code> before string → backslashes are treated literally
+        </div>
+
+        <div class="code-block">
+normal = "C:\new\test"     # \n and \t are interpreted!
+raw    = r"C:\new\test"    # exactly as written
+
+print(normal)   # C:    est (because \n = new line, \t = tab)
+print(raw)      # C:\new\test
+        </div>
+
+        <div class="tip">
+            Very useful for: file paths, regular expressions
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">3.</span> Multi-line Strings (Triple Quotes)</h2>
+
+        <div class="code-block">
+message = """
+Dear Student,
+
+Welcome to Python!
+We hope you enjoy the journey.
+
+Best regards,
+Teacher
+"""
+
+print(message)
+
+# Also useful for docstrings (function documentation)
+def add(a, b):
+    """This function adds two numbers.
+    Example: add(5, 3) → 8"""
+    return a + b
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">4.</span> f-strings – Modern & Easiest String Formatting</h2>
+
+        <div class="tip">
+            Fastest & most readable way in Python 3.6+
+        </div>
+
+        <div class="code-block">
+name = "Sara"
+age = 14
+height = 5.3
+
+print(f"My name is {name}")
+print(f"I am {age} years old")
+print(f"Next year I will be {age + 1}")
+print(f"Height: {height:.1f} feet")        # 1 decimal place
+print(f"Hi {name.upper()}, welcome!")
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">5.</span> None vs Empty vs Zero</h2>
+
+        <div class="code-block">
+print(None)          # nothing
+print("")            # empty string
+print(0)             # zero number
+print([])            # empty list
+
+# Very important checks:
+if None:    print("This won't print")
+if "":      print("This won't print")
+if 0:       print("This won't print")
+if []:      print("This won't print")
+
+# But this IS True:
+if " ":     print("Space is NOT empty!")    # prints
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">6.</span> pass – Do Nothing Statement</h2>
+
+        <div class="code-block">
+# Useful when you need empty block (Python requires at least one line)
+if age < 18:
+    pass                # "I'll write this code later"
+else:
+    print("Adult")
+
+# Also common in classes/functions you plan to implement later
+def future_feature():
+    pass
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2><span class="emoji-title">7.</span> Quick Summary Table – Tiny but Powerful</h2>
+
+        <table style="width:100%; margin:25px 0; border-collapse: collapse;">
+            <tr style="background:#0984e3; color:white;">
+                <th style="padding:14px;">Topic</th>
+                <th style="padding:14px;">Best Practice</th>
+                <th style="padding:14px;">Example</th>
+            </tr>
+            <tr><td>New line</td><td>\n</td><td>"Line1\nLine2"</td></tr>
+            <tr><td>Windows path</td><td>r"..." or double \\</td><td>r"C:\Users"</td></tr>
+            <tr><td>Modern format</td><td>f-strings</td><td>f"Hi {name}"</td></tr>
+            <tr><td>Empty block</td><td>pass</td><td>if cond: pass</td></tr>
+            <tr><td>Multi-line</td><td>""" ... """</td><td>Triple quotes</td></tr>
+            <tr><td>Nothing</td><td>None (not "") or 0</td><td>result = None</td></tr>
+        </table>
+    </div>
+
+    <div style="text-align:center; margin:70px 0; color:#444; font-size:1.2em;">
+        <p>These small details make your code <strong>professional</strong> and <strong>less buggy</strong>!<br><br>
+        Next Lesson → <strong>While Loop</strong> – Repeating things until something happens<br><br>
+        Practice using f-strings and escape characters today! 🐍✨</p>
+    </div>
+
+</body>
+</html>

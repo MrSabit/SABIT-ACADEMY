@@ -145,6 +145,106 @@ def list_users():
     users = User.query.all()
     return render_template('admin/users.html', users=users)
 
+@bp.route('/days')
+@login_required
+@admin_required
+def list_days():
+    days = Day.query.all()
+    return render_template('admin/list_days.html', days=days)
+
+@bp.route('/days/<int:id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_day(id):
+    day = Day.query.get_or_404(id)
+    try:
+        # Delete all lessons, programs, notes, assignments related to this day
+        lessons = Lesson.query.filter_by(day_id=id).all()
+        for lesson in lessons:
+            # Delete notes for this lesson
+            Note.query.filter_by(lesson_id=lesson.id).delete()
+            # Delete lesson
+            db.session.delete(lesson)
+        
+        # Delete programs for this day
+        Program.query.filter_by(day_id=id).delete()
+        
+        # Delete day
+        db.session.delete(day)
+        db.session.commit()
+        flash(f'Day "{day.title}" and all related content have been deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting day: {str(e)}', 'error')
+    return redirect(url_for('admin.list_days'))
+
+@bp.route('/lessons')
+@login_required
+@admin_required
+def list_lessons():
+    lessons = Lesson.query.all()
+    return render_template('admin/list_lessons.html', lessons=lessons)
+
+@bp.route('/lessons/<int:id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_lesson(id):
+    lesson = Lesson.query.get_or_404(id)
+    try:
+        # Delete notes for this lesson
+        Note.query.filter_by(lesson_id=id).delete()
+        
+        # Delete the lesson
+        db.session.delete(lesson)
+        db.session.commit()
+        flash(f'Lesson "{lesson.title}" and all related notes have been deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting lesson: {str(e)}', 'error')
+    return redirect(url_for('admin.list_lessons'))
+
+@bp.route('/programs')
+@login_required
+@admin_required
+def list_programs():
+    programs = Program.query.all()
+    return render_template('admin/list_programs.html', programs=programs)
+
+@bp.route('/programs/<int:id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_program(id):
+    program = Program.query.get_or_404(id)
+    try:
+        db.session.delete(program)
+        db.session.commit()
+        flash(f'Program "{program.title}" has been deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting program: {str(e)}', 'error')
+    return redirect(url_for('admin.list_programs'))
+
+@bp.route('/notes')
+@login_required
+@admin_required
+def list_notes():
+    notes = Note.query.all()
+    return render_template('admin/list_notes.html', notes=notes)
+
+@bp.route('/notes/<int:id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_note(id):
+    note = Note.query.get_or_404(id)
+    try:
+        db.session.delete(note)
+        db.session.commit()
+        flash(f'Note "{note.title}" has been deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting note: {str(e)}', 'error')
+    return redirect(url_for('admin.list_notes'))
+
 @bp.route('/users/<int:id>/change_role', methods=['GET', 'POST'])
 @login_required
 @admin_required
