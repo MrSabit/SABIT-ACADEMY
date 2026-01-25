@@ -1,0 +1,47 @@
+name: Render PostgreSQL Backup
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-api-python-client google-auth google-auth-httplib2
+
+      - name: Create database dump
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          set -e
+          TS=$(date -u +"%Y%m%d-%H%M%S")
+          NAME="render-postgres-backup-${TS}.dump.gz"
+          pg_dump --no-owner --no-privileges --format=custom "$DATABASE_URL" | gzip -c > "$NAME"
+          echo "BACKUP_FILE=$NAME" >> $GITHUB_ENV
+          echo "BACKUP_PREFIX=render-postgres-backup-" >> $GITHUB_ENV
+
+      - name: Upload to Google Drive + retention
+        env:
+          GDRIVE_SA_JSON: ${{ secrets.GDRIVE_SA_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          python tools/drive_backup.py --file "$BACKUP_FILE" --name "$BACKUP_FILE" --prefix "$BACKUP_PREFIX" --keep-last 30
