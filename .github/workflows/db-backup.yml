@@ -36,25 +36,8 @@ jobs:
           TS=$(date -u +"%Y%m%d-%H%M%S")
           NAME="render-postgres-backup-${TS}.dump.gz"
           
-          # Extract connection info from DATABASE_URL
-          DB_HOST=$(echo "$DATABASE_URL" | sed -n 's/.*@\([^:]*\):.*/\1/p')
-          DB_PORT=$(echo "$DATABASE_URL" | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
-          DB_NAME=$(echo "$DATABASE_URL" | sed -n 's/.*\/\([^?]*\).*/\1/p')
-          DB_USER=$(echo "$DATABASE_URL" | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
-          DB_PASS=$(echo "$DATABASE_URL" | sed -n 's/.*:\([^@]*\)@.*/\1/p')
-          
-          # Use PGPASSWORD for authentication
-          export PGPASSWORD="$DB_PASS"
-          
-          # Try with different pg_dump versions
-          if command -v pg_dump18 &> /dev/null; then
-            pg_dump18 --no-owner --no-privileges --format=custom -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" "$DB_NAME" | gzip -c > "$NAME"
-          elif command -v pg_dump &> /dev/null; then
-            pg_dump --no-owner --no-privileges --format=custom -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" "$DB_NAME" | gzip -c > "$NAME"
-          else
-            echo "No pg_dump found"
-            exit 1
-          fi
+          # Use DATABASE_URL directly with pg_dump
+          pg_dump --no-owner --no-privileges --format=custom "$DATABASE_URL" | gzip -c > "$NAME"
           
           echo "BACKUP_FILE=$NAME" >> $GITHUB_ENV
           echo "BACKUP_PREFIX=render-postgres-backup-" >> $GITHUB_ENV
