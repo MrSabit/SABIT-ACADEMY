@@ -16,11 +16,7 @@ jobs:
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget gnupg
-          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-          echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client-18
+          sudo apt-get install -y postgresql-client postgresql-common
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -39,9 +35,30 @@ jobs:
           set -e
           TS=$(date -u +"%Y%m%d-%H%M%S")
           NAME="render-postgres-backup-${TS}.dump.gz"
-          pg_dump --no-owner --no-privileges --format=custom "$DATABASE_URL" | gzip -c > "$NAME"
+          
+          # Extract connection info from DATABASE_URL
+          DB_HOST=$(echo "$DATABASE_URL" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          DB_PORT=$(echo "$DATABASE_URL" | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+          DB_NAME=$(echo "$DATABASE_URL" | sed -n 's/.*\/\([^?]*\).*/\1/p')
+          DB_USER=$(echo "$DATABASE_URL" | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
+          DB_PASS=$(echo "$DATABASE_URL" | sed -n 's/.*:\([^@]*\)@.*/\1/p')
+          
+          # Use PGPASSWORD for authentication
+          export PGPASSWORD="$DB_PASS"
+          
+          # Try with different pg_dump versions
+          if command -v pg_dump18 &> /dev/null; then
+            pg_dump18 --no-owner --no-privileges --format=custom -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" "$DB_NAME" | gzip -c > "$NAME"
+          elif command -v pg_dump &> /dev/null; then
+            pg_dump --no-owner --no-privileges --format=custom -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" "$DB_NAME" | gzip -c > "$NAME"
+          else
+            echo "No pg_dump found"
+            exit 1
+          fi
+          
           echo "BACKUP_FILE=$NAME" >> $GITHUB_ENV
           echo "BACKUP_PREFIX=render-postgres-backup-" >> $GITHUB_ENV
+          echo "Backup file size: $(stat -c%s "$NAME" || echo 'unknown')"
 
       - name: Upload to Google Drive + retention
         env:
