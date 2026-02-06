@@ -41,26 +41,51 @@ jobs:
           # Use Render API to create backup
           if [ -n "$RENDER_API_KEY" ] && [ -n "$RENDER_SERVICE_ID" ]; then
             echo "Using Render API backup..."
-            BACKUP_ID=$(curl -s -X POST \
+            echo "Creating backup for service: $RENDER_SERVICE_ID"
+            
+            # Create backup and capture full response
+            BACKUP_RESPONSE=$(curl -s -X POST \
               -H "Authorization: Bearer $RENDER_API_KEY" \
               -H "Content-Type: application/json" \
               -d '{"serviceName":"'$RENDER_SERVICE_ID'"}' \
-              https://api.render.com/v1/services/$RENDER_SERVICE_ID/backups | \
-              jq -r '.id')
+              https://api.render.com/v1/services/$RENDER_SERVICE_ID/backups)
             
-            # Wait for backup to complete and download
-            sleep 30
-            curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
-              "https://api.render.com/v1/backups/$BACKUP_ID" -o backup.json
-            DOWNLOAD_URL=$(jq -r '.url' backup.json)
-            curl -s "$DOWNLOAD_URL" -o "$NAME"
+            echo "Backup creation response: $BACKUP_RESPONSE"
+            
+            # Try to extract backup ID from response
+            BACKUP_ID=$(echo "$BACKUP_RESPONSE" | jq -r '.id // .backupId // empty')
+            
+            if [ -z "$BACKUP_ID" ] || [ "$BACKUP_ID" = "null" ]; then
+              echo "Failed to get backup ID from response. Response was: $BACKUP_RESPONSE"
+              echo "Falling back to pg_dump..."
+              pg_dump --no-owner --no-privileges --format=custom --ignore-version "$DATABASE_URL" | gzip -c > "$NAME"
+            else
+              echo "Backup created with ID: $BACKUP_ID"
+              
+              # Wait for backup to complete
+              echo "Waiting for backup to complete..."
+              sleep 30
+              
+              # Get backup details
+              BACKUP_DETAILS=$(curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+                "https://api.render.com/v1/backups/$BACKUP_ID")
+              echo "Backup details: $BACKUP_DETAILS"
+              
+              # Try to get download URL
+              DOWNLOAD_URL=$(echo "$BACKUP_DETAILS" | jq -r '.url // .downloadUrl // empty')
+              
+              if [ -z "$DOWNLOAD_URL" ] || [ "$DOWNLOAD_URL" = "null" ]; then
+                echo "Failed to get download URL. Details: $BACKUP_DETAILS"
+                echo "Falling back to pg_dump..."
+                pg_dump --no-owner --no-privileges --format=custom --ignore-version "$DATABASE_URL" | gzip -c > "$NAME"
+              else
+                echo "Downloading backup from: $DOWNLOAD_URL"
+                curl -s "$DOWNLOAD_URL" -o "$NAME"
+              fi
+            fi
           else
             echo "Render API keys not set, falling back to pg_dump..."
-            # Try with pg_dump --ignore-version
-            pg_dump --no-owner --no-privileges --format=custom --ignore-version "$DATABASE_URL" | gzip -c > "$NAME" || {
-              echo "pg_dump failed, creating empty file"
-              echo "Backup failed" > "$NAME"
-            }
+            pg_dump --no-owner --no-privileges --format=custom --ignore-version "$DATABASE_URL" | gzip -c > "$NAME"
           fi
           
           echo "BACKUP_FILE=$NAME" >> $GITHUB_ENV
