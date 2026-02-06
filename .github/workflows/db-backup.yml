@@ -36,8 +36,21 @@ jobs:
           TS=$(date -u +"%Y%m%d-%H%M%S")
           NAME="render-postgres-backup-${TS}.dump.gz"
           
-          echo "Creating database dump with pg_dump..."
-          pg_dump --no-owner --no-privileges --format=custom --ignore-version "$DATABASE_URL" | gzip -c > "$NAME"
+          # Extract connection info from DATABASE_URL
+          DB_HOST=$(echo "$DATABASE_URL" | sed -n 's/.*@\([^:]*\):.*/\1/p')
+          DB_PORT=$(echo "$DATABASE_URL" | sed -n 's/.*:\([0-9]*\)\/.*/\1/p')
+          DB_NAME=$(echo "$DATABASE_URL" | sed -n 's/.*\/\([^?]*\).*/\1/p')
+          DB_USER=$(echo "$DATABASE_URL" | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
+          DB_PASS=$(echo "$DATABASE_URL" | sed -n 's/.*:\([^@]*\)@.*/\1/p')
+          
+          echo "Creating database dump using PostgreSQL 18 Docker..."
+          
+          # Use Docker with PostgreSQL 18 to match Render
+          docker run --rm \
+            -e PGPASSWORD="$DB_PASS" \
+            postgres:18 \
+            pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" \
+            --no-owner --no-privileges --format=custom "$DB_NAME" | gzip -c > "$NAME"
           
           echo "BACKUP_FILE=$NAME" >> $GITHUB_ENV
           echo "BACKUP_PREFIX=render-postgres-backup-" >> $GITHUB_ENV
