@@ -36,11 +36,10 @@ jobs:
           TS=$(date -u +"%Y%m%d-%H%M%S")
           NAME="render-postgres-backup-${TS}.dump.gz"
           
-          # Debug: Show DATABASE_URL (masked)
-          echo "DATABASE_URL detected: ${DATABASE_URL:0:20}...${DATABASE_URL: -20}"
+          echo "DATABASE_URL format: ${DATABASE_URL:0:50}..."
           
           # Extract connection info from DATABASE_URL using Python
-          python3 << 'EOF' > /tmp/db_info.txt
+          python3 << 'EOF' > conn_info.txt
 import os
 import re
 db_url = os.environ.get('DATABASE_URL', '')
@@ -54,11 +53,13 @@ if match:
     print(f"DB_USER={user}")
     print(f"DB_PASS={password}")
 else:
-    print("ERROR: Could not parse DATABASE_URL")
+    print("Failed to parse DATABASE_URL")
+    print(f"URL: {db_url}")
 EOF
           
-          # Load the parsed values
-          source /tmp/db_info.txt
+          # Source the connection info
+          cat conn_info.txt
+          source conn_info.txt
           
           echo "Creating database dump using PostgreSQL 18 Docker..."
           echo "Host: $DB_HOST, Port: $DB_PORT, User: $DB_USER, DB: $DB_NAME"
