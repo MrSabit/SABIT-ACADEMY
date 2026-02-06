@@ -39,7 +39,7 @@ jobs:
           echo "DATABASE_URL format: ${DATABASE_URL:0:50}..."
           
           # Extract connection info from DATABASE_URL using Python
-          python3 << 'EOF' > conn_info.txt
+          python3 -c "
 import os
 import re
 db_url = os.environ.get('DATABASE_URL', '')
@@ -47,15 +47,15 @@ db_url = os.environ.get('DATABASE_URL', '')
 match = re.match(r'postgresql://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)', db_url)
 if match:
     user, password, host, port, dbname = match.groups()
-    print(f"DB_HOST={host}")
-    print(f"DB_PORT={port}")
-    print(f"DB_NAME={dbname}")
-    print(f"DB_USER={user}")
-    print(f"DB_PASS={password}")
+    print(f'DB_HOST={host}')
+    print(f'DB_PORT={port}')
+    print(f'DB_NAME={dbname}')
+    print(f'DB_USER={user}')
+    print(f'DB_PASS={password}')
 else:
-    print("Failed to parse DATABASE_URL")
-    print(f"URL: {db_url}")
-EOF
+    print('Failed to parse DATABASE_URL')
+    print(f'URL: {db_url}')
+" > conn_info.txt
           
           # Source the connection info
           cat conn_info.txt
