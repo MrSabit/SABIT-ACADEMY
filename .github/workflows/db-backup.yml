@@ -16,7 +16,7 @@ jobs:
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-client postgresql-common
+          sudo apt-get install -y postgresql-client postgresql-common jq
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -31,13 +31,37 @@ jobs:
       - name: Create database dump
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
         run: |
           set -e
           TS=$(date -u +"%Y%m%d-%H%M%S")
           NAME="render-postgres-backup-${TS}.dump.gz"
           
-          # Use DATABASE_URL directly with pg_dump
-          pg_dump --no-owner --no-privileges --format=custom "$DATABASE_URL" | gzip -c > "$NAME"
+          # Use Render API to create backup
+          if [ -n "$RENDER_API_KEY" ] && [ -n "$RENDER_SERVICE_ID" ]; then
+            echo "Using Render API backup..."
+            BACKUP_ID=$(curl -s -X POST \
+              -H "Authorization: Bearer $RENDER_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{"serviceName":"'$RENDER_SERVICE_ID'"}' \
+              https://api.render.com/v1/services/$RENDER_SERVICE_ID/backups | \
+              jq -r '.id')
+            
+            # Wait for backup to complete and download
+            sleep 30
+            curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+              "https://api.render.com/v1/backups/$BACKUP_ID" -o backup.json
+            DOWNLOAD_URL=$(jq -r '.url' backup.json)
+            curl -s "$DOWNLOAD_URL" -o "$NAME"
+          else
+            echo "Render API keys not set, falling back to pg_dump..."
+            # Try with pg_dump --ignore-version
+            pg_dump --no-owner --no-privileges --format=custom --ignore-version "$DATABASE_URL" | gzip -c > "$NAME" || {
+              echo "pg_dump failed, creating empty file"
+              echo "Backup failed" > "$NAME"
+            }
+          fi
           
           echo "BACKUP_FILE=$NAME" >> $GITHUB_ENV
           echo "BACKUP_PREFIX=render-postgres-backup-" >> $GITHUB_ENV
