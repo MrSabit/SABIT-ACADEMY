@@ -38,8 +38,8 @@ jobs:
           
           echo "DATABASE_URL format: ${DATABASE_URL:0:50}..."
           
-          # Extract connection info from DATABASE_URL using Python
-          python3 -c "
+          # Create Python script to parse DATABASE_URL
+          cat > parse_db.py << 'EOF'
 import os
 import re
 db_url = os.environ.get('DATABASE_URL', '')
@@ -55,7 +55,10 @@ if match:
 else:
     print('Failed to parse DATABASE_URL')
     print(f'URL: {db_url}')
-" > conn_info.txt
+EOF
+          
+          # Run Python script and save output
+          python3 parse_db.py > conn_info.txt
           
           # Source the connection info
           cat conn_info.txt
