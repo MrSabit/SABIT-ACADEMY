@@ -44,13 +44,15 @@ jobs:
           DB_PASS=$(echo "$DATABASE_URL" | sed -n 's/.*:\([^@]*\)@.*/\1/p')
           
           echo "Creating database dump using PostgreSQL 18 Docker..."
+          echo "Host: $DB_HOST, Port: $DB_PORT, User: $DB_USER, DB: $DB_NAME"
           
-          # Use Docker with PostgreSQL 18 to match Render
+          # Use Docker with PostgreSQL 18 and force TCP connection
           docker run --rm \
             -e PGPASSWORD="$DB_PASS" \
             postgres:18 \
             pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" \
-            --no-owner --no-privileges --format=custom "$DB_NAME" | gzip -c > "$NAME"
+            --no-owner --no-privileges --format=custom \
+            --host="$DB_HOST" --port="$DB_PORT" "$DB_NAME" | gzip -c > "$NAME"
           
           echo "BACKUP_FILE=$NAME" >> $GITHUB_ENV
           echo "BACKUP_PREFIX=render-postgres-backup-" >> $GITHUB_ENV
